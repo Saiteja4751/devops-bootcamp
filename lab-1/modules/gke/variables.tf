@@ -1,24 +1,29 @@
 variable "project_id" {
-  type        = string
-  description = "GCP project ID"
+  type = string
 }
 
 variable "region" {
-  type        = string
-  description = "GKE region"
+  type = string
 }
 
 variable "cluster_name" {
-  type        = string
-  description = "GKE Autopilot cluster name"
+  type = string
 }
 
-variable "network" {
-  type        = string
-  description = "VPC network name"
+variable "network_id" {
+  type = string
 }
 
-variable "subnetwork" {
-  type        = string
-  description = "Subnetwork where GKE nodes and pods will run"
+variable "subnet_id" {
+  type = string
+}
+
+variable "cluster_secondary_range_name" {
+  type = string
+  description = "Name of the secondary IP range for Pods (from VPC module)"
+}
+
+variable "services_secondary_range_name" {
+  type = string
+  description = "Name of the secondary IP range for Services (from VPC module)"
 }

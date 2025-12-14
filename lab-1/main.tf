@@ -1,37 +1,64 @@
 terraform {
-  required_version = ">= 1.5.0"
+  cloud {
+    organization = "DEvOps_Bootcamp-1"
 
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 5.0"
+    workspaces {
+      name = "dev"          # workspace name
     }
   }
 }
 
+
+
+# backend "gcs" {
+#   bucket = "gke-terraform-prod-state"
+#   prefix = "autopilot/prod"
+# }
+
+
 provider "google" {
   project = var.project_id
   region  = var.region
+  credentials = file("fake-creds.json")
 }
 
-# ----------------------------
-# VPC MODULE
-# ----------------------------
+provider "google-beta" {
+  project = var.project_id
+  region  = var.region
+credentials = file("fake-creds.json")
+}
+
+# ---------------------------------------
+# VPC MODULE 
+# ---------------------------------------
 module "vpc" {
-  source       = "./modules/vpc"
-  project_id   = var.project_id
-  vpc_name     = var.vpc_name
-  subnets      = var.subnets
+  source = "./modules/vpc"
+
+  project_id     = var.project_id
+  vpc_name       = var.vpc_name
+  subnet_name    = var.subnet_name
+  subnet_cidr    = var.subnet_cidr
+  pods_cidr      = var.pods_cidr
+  services_cidr  = var.services_cidr
+  region         = var.region
 }
 
-# ----------------------------
-# GKE MODULE
-# ----------------------------
+# ---------------------------------------
+# GKE AUTOPILOT MODULE
+# ---------------------------------------
 module "gke" {
-  source         = "./modules/gke"
-  project_id     = var.project_id
-  region         = var.region
-  cluster_name   = var.cluster_name
-  network        = module.vpc.vpc_name
-  subnetwork     = module.vpc.subnets["primary"].name
+  source = "./modules/gke"
+
+  project_id   = var.project_id
+  region       = var.region
+  cluster_name = var.cluster_name
+
+  # From VPC module outputs
+  network_id   = module.vpc.network_id
+  subnet_id    = module.vpc.subnet_id
+
+  # Secondary ranges
+  cluster_secondary_range_name  = module.vpc.pods_range_name
+  services_secondary_range_name = module.vpc.services_range_name
 }
+

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "dummy",
+  "private_key_id": "dummy",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n123\n-----END PRIVATE KEY-----\n",
+  "client_email": "dummy@dummy.iam.gserviceaccount.com",
+  "client_id": "123",
+  "auth_uri": "https://example.com",
+  "token_uri": "https://example.com",
+  "auth_provider_x509_cert_url": "https://example.com",
+  "client_x509_cert_url": "https://example.com"
+}
